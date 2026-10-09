@@ -1,0 +1,86 @@
+<%- include('./partials/header') %>
+<% const totalCount = Object.values(statusCounts).reduce(function (a, b) { return a + b; }, 0); %>
+<main class="page">
+    <div class="container">
+        <div class="page-head">
+            <div>
+                <h1 class="page-title">Orders</h1>
+                <p class="page-sub">Update the status as you ship. Cancelling puts the stock back.</p>
+            </div>
+        </div>
+
+        <nav class="chips" aria-label="Filter orders">
+            <a class="chip <%= status === 'all' ? 'is-active' : '' %>" href="/owners/orders">All<span><%= totalCount %></span></a>
+            <% statuses.forEach(function (s) { %>
+                <a class="chip <%= status === s ? 'is-active' : '' %>" href="/owners/orders?status=<%= s %>"><%= statusLabels[s] %><span><%= statusCounts[s] || 0 %></span></a>
+            <% }) %>
+        </nav>
+
+        <% if (orders.length === 0) { %>
+            <div class="empty">
+                <i class="ri-file-list-3-line"></i>
+                <h3>No orders here</h3>
+                <p>New orders show up as soon as a customer checks out.</p>
+            </div>
+        <% } else { %>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Order</th>
+                            <th>Customer</th>
+                            <th>Deliver to</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% orders.forEach(function (order) { %>
+            <% if (!order.shipping) order.shipping = { fullname: order.user ? order.user.fullname : '-', phone: '-', line: '-', city: '-', country: '-' }; %>
+                            <tr>
+                                <td class="nowrap">
+                                    <strong>#<%= order.code %></strong>
+                                    <div class="muted"><%= formatDate(order.createdAt) %></div>
+                                </td>
+                                <td>
+                                    <strong><%= order.shipping.fullname %></strong>
+                                    <div><a class="link" href="tel:<%= order.shipping.phone %>"><%= order.shipping.phone %></a></div>
+                                    <div class="muted"><%= order.user ? order.user.email : order.shipping.email %></div>
+                                </td>
+                                <td style="min-width: 200px">
+                                    <%= order.shipping.line %>
+                                    <div class="muted"><%= order.shipping.city %><%= order.shipping.postalCode ? ' ' + order.shipping.postalCode : '' %>, <%= order.shipping.country %></div>
+                                </td>
+                                <td style="min-width: 180px">
+                                    <% order.items.forEach(function (item) { %>
+                                        <div><%= item.name %> &times; <%= item.quantity %></div>
+                                    <% }) %>
+                                </td>
+                                <td class="nowrap">
+                                    <strong><%= formatPrice(order.totals.total) %></strong>
+                                    <div class="muted"><%= paymentMethods[order.paymentMethod] %><%= order.paymentStatus === 'paid' ? ' · paid' : '' %></div>
+                                </td>
+                                <td class="nowrap">
+                                    <span class="status status--<%= order.status %>"><%= statusLabels[order.status] %></span>
+                                    <% if (order.status !== 'cancelled') { %>
+                                        <form class="status-form" action="/owners/orders/<%= order._id %>/status?_method=PATCH<%= status !== 'all' ? '&from=' + status : '' %>" method="post">
+                                            <label class="sr-only" for="status-<%= order._id %>">Change status</label>
+                                            <select class="select" name="status" id="status-<%= order._id %>">
+                                                <% statuses.forEach(function (s) { %>
+                                                    <option value="<%= s %>" <%= s === order.status ? 'selected' : '' %>><%= statusLabels[s] %></option>
+                                                <% }) %>
+                                            </select>
+                                            <button class="btn btn--ghost btn--sm" type="submit">Update</button>
+                                        </form>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </div>
+</main>
+<%- include('./partials/footer') %>

@@ -1,0 +1,77 @@
+<%- include('./partials/header') %>
+<main class="page">
+    <div class="container container--narrow">
+        <div class="page-head">
+            <div>
+                <h1 class="page-title">My orders</h1>
+                <p class="page-sub"><%= orders.length %> <%= orders.length === 1 ? 'order' : 'orders' %></p>
+            </div>
+        </div>
+
+        <% if (orders.length === 0) { %>
+            <div class="empty">
+                <i class="ri-file-list-3-line"></i>
+                <h3>No orders yet</h3>
+                <p>When you place an order, you can track it here.</p>
+                <a class="btn btn--primary" href="/shop">Start shopping</a>
+            </div>
+        <% } %>
+
+        <% orders.forEach(function (order) { %>
+            <% if (!order.shipping) order.shipping = { fullname: order.user ? order.user.fullname : '-', phone: '-', line: '-', city: '-', country: '-' }; %>
+            <article class="order">
+                <header class="order__head">
+                    <div>
+                        <div class="order__code">Order #<%= order.code %></div>
+                        <div class="order__date"><%= formatDate(order.createdAt) %></div>
+                    </div>
+                    <span class="status status--<%= order.status %>"><%= statusLabels[order.status] %></span>
+                </header>
+
+                <div class="order__body">
+                    <% order.items.forEach(function (item) { %>
+                        <div class="order__item">
+                            <% if (item.product) { %>
+                                <div class="order__thumb" style="background-color: <%= item.product.bgcolor %>">
+                                    <img src="<%= productImageUrl(item.product) %>" alt="">
+                                </div>
+                            <% } else { %>
+                                <div class="order__thumb"><i class="ri-shopping-bag-3-line"></i></div>
+                            <% } %>
+                            <div>
+                                <strong><%= item.name %></strong>
+                                <div class="muted"><%= formatPrice(item.price - item.discount) %> &times; <%= item.quantity %></div>
+                            </div>
+                            <strong><%= formatPrice((item.price - item.discount) * item.quantity) %></strong>
+                        </div>
+                    <% }) %>
+                </div>
+
+                <footer class="order__foot">
+                    <div>
+                        <h4>Delivering to</h4>
+                        <p><strong><%= order.shipping.fullname %></strong> &middot; <%= order.shipping.phone %></p>
+                        <p class="muted"><%= order.shipping.line %>, <%= order.shipping.city %><%= order.shipping.postalCode ? ' ' + order.shipping.postalCode : '' %>, <%= order.shipping.country %></p>
+                    </div>
+                    <div>
+                        <h4>Payment</h4>
+                        <p><%= paymentMethods[order.paymentMethod] %></p>
+                        <p class="muted"><%= order.paymentStatus === 'paid' ? 'Paid' : 'Pay on delivery' %></p>
+                    </div>
+                    <div class="order__total">
+                        <div>
+                            <h4>Total</h4>
+                            <strong><%= formatPrice(order.totals.total) %></strong>
+                        </div>
+                        <% if (order.status === 'placed') { %>
+                            <form action="/users/orders/<%= order._id %>/cancel" method="post" data-confirm="Cancel order #<%= order.code %>?">
+                                <button class="link-btn link--danger" type="submit">Cancel order</button>
+                            </form>
+                        <% } %>
+                    </div>
+                </footer>
+            </article>
+        <% }) %>
+    </div>
+</main>
+<%- include('./partials/footer') %>

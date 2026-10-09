@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title + ' · Scatch' : 'Scatch' %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <script src="/js/main.js" defer></script>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.png" type="image/png" sizes="32x32">
+</head>
+
+<body>
+    
+    <% const role = typeof authRole !== 'undefined' ? authRole : null; %>
+    <% const nav = typeof active !== 'undefined' ? active : ''; %>
+    <% const homeLink = role === 'owner' ? '/owners/admin' : (role === 'user' ? '/shop' : '/'); %>
+    <header class="nav">
+        <div class="container nav__inner">
+                        <a class="nav__brand brand-logo" href="<%= homeLink %>"><img src="/favicon.svg" alt="">Scatch</a>
+            <% if (role === 'owner') { %>
+                <span class="nav__role">Owner</span>
+            <% } %>
+
+            <nav class="nav__links" aria-label="Main">
+                <% if (role === 'user') { %>
+                    <a class="nav__link <%= nav === 'shop' ? 'is-active' : '' %>" href="/shop">
+                        <span class="nav__label">Shop</span>
+                    </a>
+                    <a class="nav__link <%= nav === 'orders' ? 'is-active' : '' %>" href="/users/orders">
+                        <span class="nav__label">My orders</span>
+                    </a>
+                    <a class="nav__link <%= nav === 'cart' ? 'is-active' : '' %>" href="/cart">
+                        <span class="nav__label">Cart</span>
+                        <% if (typeof cartCount !== 'undefined' && cartCount > 0) { %>
+                            <span class="nav__count"><%= cartCount %></span>
+                        <% } %>
+                    </a>
+                    <a class="nav__link <%= nav === 'profile' ? 'is-active' : '' %>" href="/users/profile" title="My profile">
+                        <span class="nav__avatar"><%= typeof user !== 'undefined' && user ? user.initial : '?' %></span>
+                    </a>
+                    <form action="/users/logout" method="post">
+                        <button class="nav__link" type="submit" title="Log out">
+                            <i class="ri-logout-box-r-line"></i><span class="nav__label">Log out</span>
+                        </button>
+                    </form>
+                <% } else if (role === 'owner') { %>
+                    <a class="nav__link <%= nav === 'dashboard' ? 'is-active' : '' %>" href="/owners/admin">
+                        <span class="nav__label">Products</span>
+                    </a>
+                    <a class="nav__link <%= nav === 'create' ? 'is-active' : '' %>" href="/products/create">
+                        <i class="ri-add-box-line"></i><span class="nav__label">Add product</span>
+                    </a>
+                    <a class="nav__link <%= nav === 'orders' ? 'is-active' : '' %>" href="/owners/orders">
+                        <span class="nav__label">Orders</span>
+                    </a>
+                    <form action="/owners/logout" method="post">
+                        <button class="nav__link" type="submit" title="Log out">
+                            <i class="ri-logout-box-r-line"></i><span class="nav__label">Log out</span>
+                        </button>
+                    </form>
+                <% } else { %>
+                    <a class="nav__link" href="/"><i class="ri-user-line"></i><span class="nav__label">Log in</span></a>
+                    <a class="nav__link" href="/owners/login"><i class="ri-shield-user-line"></i><span class="nav__label">Owner</span></a>
+                <% } %>
+            </nav>
+        </div>
+    </header>
+
+    <%- include('./flash') %>

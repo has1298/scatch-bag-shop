@@ -1,0 +1,63 @@
+<%- include('./partials/header') %>
+<section class="auth">
+    <div class="auth__showcase">
+        <h1 class="auth__title">Bags for the commute, the weekend and everything between.</h1>
+        <p class="auth__lead">Backpacks, canvas totes and leather duffels. Order online and pay in cash when it reaches your door.</p>
+        <div class="auth__shelf" aria-hidden="true">
+            <div style="background-color: #f3e3dc"><img src="/images/4bag.png" alt=""></div>
+            <div style="background-color: #dbe4f0"><img src="/images/1bag.png" alt=""></div>
+            <div style="background-color: #f6e7d8"><img src="/images/8bag.png" alt=""></div>
+        </div>
+        <div class="auth__perks">
+            <span><i class="ri-hand-coin-line"></i> Cash on delivery</span>
+            <span><i class="ri-truck-line"></i> Free shipping</span>
+        </div>
+    </div>
+
+    <div class="auth__forms">
+        <div class="auth__box">
+            <div class="auth__logo"><img src="/favicon.svg" alt="Scatch"></div>
+            <div class="tabs" role="tablist">
+                <input type="radio" name="auth-tab" id="tab-login" <%= tab === 'login' ? 'checked' : '' %>>
+                <input type="radio" name="auth-tab" id="tab-register" <%= tab === 'register' ? 'checked' : '' %>>
+                <label for="tab-login">Log in</label>
+                <label for="tab-register">Create account</label>
+            </div>
+
+            <form class="auth-panel auth-panel--login" autocomplete="off" action="/users/login" method="post">
+                <h2>Welcome back</h2>
+                <label class="field">
+                    <span class="field__label">Email</span>
+                    <input class="input" type="email" name="email" placeholder="you@example.com" required>
+                </label>
+                <label class="field">
+                    <span class="field__label">Password</span>
+                    <input class="input" type="password" name="password" placeholder="Your password" required>
+                </label>
+                <button class="btn btn--primary btn--lg btn--block" type="submit">Log in</button>
+            </form>
+
+            <form class="auth-panel auth-panel--register" autocomplete="off" action="/users/register" method="post">
+                <h2>Create your account</h2>
+                <label class="field">
+                    <span class="field__label">Full name</span>
+                    <input class="input" type="text" name="fullname" placeholder="Your fullname" required minlength="3" maxlength="60">
+                </label>
+                <label class="field">
+                    <span class="field__label">Email</span>
+                    <input class="input" type="email" name="email" placeholder="you@example.com" required>
+                </label>
+                <label class="field">
+                    <span class="field__label">Password</span>
+                    <input class="input" type="password" name="password" placeholder="At least 6 characters" required minlength="6">
+                </label>
+                <button class="btn btn--primary btn--lg btn--block" type="submit">Create my account</button>
+            </form>
+
+            <!-- <p class="auth__note">Run the shop? <a class="link" href="/owners/login">Owner login</a></p> -->
+        </div>
+    </div>
+</section>
+</body>
+
+</html>

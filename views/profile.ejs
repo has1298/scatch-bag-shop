@@ -1,0 +1,70 @@
+<%- include('./partials/header') %>
+<% const addr = user.address || {}; %>
+<main class="page">
+    <div class="container container--narrow">
+        <div class="profile-head">
+            <div class="profile-head__avatar"><%= user.initial %></div>
+            <div>
+                <h1 class="page-title"><%= user.fullname %></h1>
+                <div class="profile-head__meta">
+                    <span><i class="ri-mail-line"></i> <%= user.email %></span>
+                    <span><i class="ri-calendar-line"></i> Member since <%= new Date(user.createdAt).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }) %></span>
+                    <a class="link" href="/users/orders"><%= orderCount %> <%= orderCount === 1 ? 'order' : 'orders' %></a>
+                </div>
+            </div>
+        </div>
+
+        <form action="/users/profile?_method=PUT" method="post" autocomplete="on">
+            <section class="panel">
+                <h2 class="panel__title"><i class="ri-user-line"></i> Personal details</h2>
+                <div class="form-grid">
+                    <label class="field">
+                        <span class="field__label">Full name</span>
+                        <input class="input" type="text" name="fullname" value="<%= user.fullname %>" autocomplete="name" required minlength="3" maxlength="60">
+                    </label>
+                    <label class="field">
+                        <span class="field__label">Contact number</span>
+                        <input class="input" type="tel" name="contact" value="<%= user.contact %>" placeholder="03001234567" autocomplete="tel">
+                    </label>
+                    <label class="field span-2">
+                        <span class="field__label">Email</span>
+                        <input class="input" type="email" name="email" value="<%= user.email %>" autocomplete="email" required>
+                        <span class="field__hint">You log in with this email.</span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2 class="panel__title"><i class="ri-map-pin-line"></i> Saved address</h2>
+                <div class="form-grid">
+                    <label class="field span-2">
+                        <span class="field__label">Address</span>
+                        <textarea class="textarea" name="line" placeholder="House no., street, area / sector" autocomplete="street-address" maxlength="200"><%= addr.line %></textarea>
+                    </label>
+                    <label class="field">
+                        <span class="field__label">City</span>
+                        <input class="input" type="text" name="city" value="<%= addr.city %>" placeholder="Karachi" autocomplete="address-level2">
+                    </label>
+                    <label class="field">
+                        <span class="field__label">Postal code</span>
+                        <input class="input" type="text" name="postalCode" value="<%= addr.postalCode %>" placeholder="75500" autocomplete="postal-code">
+                    </label>
+                    <label class="field span-2">
+                        <span class="field__label">Country</span>
+                        <select class="select" name="country" autocomplete="country-name">
+                            <% countries.forEach(function (c) { %>
+                                <option value="<%= c %>" <%= c === (addr.country || 'Pakistan') ? 'selected' : '' %>><%= c %></option>
+                            <% }) %>
+                        </select>
+                    </label>
+                </div>
+                <p class="field__hint" style="margin-top: 14px">Checkout fills these in for you.</p>
+            </section>
+
+            <div style="margin-top: 20px">
+                <button class="btn btn--primary btn--lg" type="submit">Save changes</button>
+            </div>
+        </form>
+    </div>
+</main>
+<%- include('./partials/footer') %>

@@ -1,0 +1,11 @@
+<%- include('./partials/header') %>
+<main class="page">
+    <div class="container">
+        <a class="back-link" href="/owners/admin"><i class="ri-arrow-left-line"></i> All products</a>
+        <div class="page-head">
+            <h1 class="page-title">Add a product</h1>
+        </div>
+        <%- include('./partials/product-form', { formAction: '/products/create', submitLabel: 'Add product', product: null }) %>
+    </div>
+</main>
+<%- include('./partials/footer') %>

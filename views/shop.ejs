@@ -1,0 +1,56 @@
+<%- include('./partials/header') %>
+<% const currentFilter = filterOptions.find(function (o) { return o.value === filter; }); %>
+<main class="page">
+    <div class="container">
+        <div class="page-head">
+            <div>
+                <h1 class="page-title"><%= currentFilter.label %></h1>
+                <p class="page-sub"><%= products.length %> <%= products.length === 1 ? 'bag' : 'bags' %></p>
+            </div>
+            <form class="sort" action="/shop" method="get" data-autosubmit>
+                <input type="hidden" name="filter" value="<%= filter %>">
+                <label for="sortby">Sort by</label>
+                <select class="select" name="sortby" id="sortby">
+                    <% sortOptions.forEach(function (opt) { %>
+                        <option value="<%= opt.value %>" <%= opt.value === sortby ? 'selected' : '' %>><%= opt.label %></option>
+                    <% }) %>
+                </select>
+                <noscript><button class="btn btn--ghost btn--sm" type="submit">Apply</button></noscript>
+            </form>
+        </div>
+
+        <div class="shop">
+            <aside class="filters" aria-label="Filters">
+                <div class="filters__group">
+                    <p class="filters__heading">Collections</p>
+                    <% ['all', 'new', 'discounted'].forEach(function (value) { %>
+                        <% const opt = filterOptions.find(function (o) { return o.value === value; }); %>
+                        <a class="<%= filter === value ? 'is-active' : '' %>" href="/shop?filter=<%= value %>&sortby=<%= sortby %>"><%= opt.label %></a>
+                    <% }) %>
+                </div>
+                <div class="filters__group">
+                    <p class="filters__heading">Availability</p>
+                    <a class="<%= filter === 'available' ? 'is-active' : '' %>" href="/shop?filter=available&sortby=<%= sortby %>">In stock</a>
+                </div>
+            </aside>
+
+            <div>
+                <% if (products.length === 0) { %>
+                    <div class="empty">
+                        <i class="ri-shopping-bag-3-line"></i>
+                        <h3>No bags here yet</h3>
+                        <p>Try another collection or see everything.</p>
+                        <a class="btn btn--ghost" href="/shop">See all bags</a>
+                    </div>
+                <% } else { %>
+                    <div class="grid">
+                        <% products.forEach(function (product) { %>
+                            <%- include('./partials/product-tile', { product: product }) %>
+                        <% }) %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</main>
+<%- include('./partials/footer') %>

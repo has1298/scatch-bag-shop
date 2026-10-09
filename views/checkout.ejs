@@ -1,0 +1,97 @@
+<%- include('./partials/header') %>
+<main class="page">
+    <div class="container">
+        <a class="back-link" href="/cart"><i class="ri-arrow-left-line"></i> Back to cart</a>
+        <div class="page-head">
+            <h1 class="page-title">Checkout</h1>
+        </div>
+
+        <form class="split" action="/cart/checkout" method="post" autocomplete="on">
+            <div>
+                <section class="panel">
+                    <h2 class="panel__title"><i class="ri-user-line"></i> Contact</h2>
+                    <div class="form-grid">
+                        <label class="field">
+                            <span class="field__label">Full name</span>
+                            <input class="input" type="text" name="fullname" value="<%= form.fullname %>" autocomplete="name" required minlength="3" maxlength="60">
+                        </label>
+                        <label class="field">
+                            <span class="field__label">Phone number</span>
+                            <input class="input" type="tel" name="phone" value="<%= form.phone %>" placeholder="03001234567" autocomplete="tel" required>
+                            <span class="field__hint">The rider will call this number.</span>
+                        </label>
+                        <label class="field span-2">
+                            <span class="field__label">Email</span>
+                            <input class="input" type="email" value="<%= user.email %>" readonly>
+                        </label>
+                    </div>
+                </section>
+
+                <section class="panel">
+                    <h2 class="panel__title"><i class="ri-map-pin-line"></i> Delivery address</h2>
+                    <div class="form-grid">
+                        <label class="field span-2">
+                            <span class="field__label">Address</span>
+                            <textarea class="textarea" name="line" placeholder="House no., street, area / sector" autocomplete="street-address" required minlength="5" maxlength="200"><%= form.line %></textarea>
+                        </label>
+                        <label class="field">
+                            <span class="field__label">City</span>
+                            <input class="input" type="text" name="city" value="<%= form.city %>" placeholder="Karachi" autocomplete="address-level2" required>
+                        </label>
+                        <label class="field">
+                            <span class="field__label">Postal code <span class="muted">(optional)</span></span>
+                            <input class="input" type="text" name="postalCode" value="<%= form.postalCode %>" placeholder="75500" autocomplete="postal-code">
+                        </label>
+                        <label class="field span-2">
+                            <span class="field__label">Country</span>
+                            <select class="select" name="country" autocomplete="country-name" required>
+                                <% countries.forEach(function (c) { %>
+                                    <option value="<%= c %>" <%= c === form.country ? 'selected' : '' %>><%= c %></option>
+                                <% }) %>
+                            </select>
+                        </label>
+                        <label class="check span-2">
+                            <input type="checkbox" name="saveAddress" <%= form.saveAddress ? 'checked' : '' %>>
+                            Save this address and number to my profile
+                        </label>
+                    </div>
+                </section>
+
+                <section class="panel">
+                    <h2 class="panel__title"><i class="ri-wallet-3-line"></i> Payment</h2>
+                    <% Object.keys(paymentMethods).forEach(function (key) { %>
+                        <label class="pay-option">
+                            <input type="radio" name="paymentMethod" value="<%= key %>" <%= form.paymentMethod === key || Object.keys(paymentMethods).length === 1 ? 'checked' : '' %> required>
+                            <span>
+                                <strong><%= paymentMethods[key] %></strong>
+                                <span class="muted">Pay in cash to the rider when your bag arrives.</span>
+                            </span>
+                            <i class="ri-hand-coin-line"></i>
+                        </label>
+                    <% }) %>
+                </section>
+            </div>
+
+            <aside class="summary">
+                <h2 class="summary__title">Order summary</h2>
+                <div class="summary__items">
+                    <% items.forEach(function (item) { %>
+                        <% const p = item.product; %>
+                        <div class="mini-item">
+                            <div class="mini-item__thumb" style="background-color: <%= p.bgcolor %>">
+                                <img src="<%= productImageUrl(p) %>" alt="">
+                                <span class="mini-item__qty"><%= item.quantity %></span>
+                            </div>
+                            <span><%= p.name %></span>
+                            <strong><%= formatPrice((p.price - (p.discount || 0)) * item.quantity) %></strong>
+                        </div>
+                    <% }) %>
+                </div>
+                <%- include('./partials/summary-rows', { totals: totals }) %>
+                <button class="btn btn--primary btn--lg btn--block" type="submit">Place order</button>
+                <p class="summary__note"><i class="ri-shield-check-line"></i> You can cancel from My orders until the order ships.</p>
+            </aside>
+        </form>
+    </div>
+</main>
+<%- include('./partials/footer') %>

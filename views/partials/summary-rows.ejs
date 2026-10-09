@@ -1,0 +1,14 @@
+<%# Price breakdown (cart aur checkout dono me). `totals` pass hota hai. %>
+<dl>
+    <div class="summary__row"><dt>Total MRP</dt><dd><%= formatPrice(totals.mrp) %></dd></div>
+    <div class="summary__row">
+        <dt>Discount on MRP</dt>
+        <dd class="<%= totals.discount > 0 ? 'is-saving' : '' %>"><%= totals.discount > 0 ? '− ' : '' %><%= formatPrice(totals.discount) %></dd>
+    </div>
+    <div class="summary__row"><dt>Platform fee</dt><dd><%= formatPrice(totals.platformFee) %></dd></div>
+    <div class="summary__row"><dt>Shipping</dt><dd class="is-saving"><%= totals.shipping > 0 ? formatPrice(totals.shipping) : 'Free' %></dd></div>
+</dl>
+<div class="summary__total">
+    <span>Total</span>
+    <strong><%= formatPrice(totals.total) %></strong>
+</div>

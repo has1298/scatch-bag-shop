@@ -1,0 +1,75 @@
+<%- include('./partials/header') %>
+<main class="page">
+    <div class="container">
+        <div class="page-head">
+            <div>
+                <h1 class="page-title">Products</h1>
+                <p class="page-sub">Edit prices, mark bags as sold out or remove them.</p>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap">
+                <% if (products.length > 0) { %>
+                    <form action="/products?_method=DELETE" method="post" data-confirm="Delete ALL products? This cannot be undone.">
+                        <button class="btn btn--danger" type="submit"><i class="ri-delete-bin-line"></i> Delete all</button>
+                    </form>
+                <% } %>
+                <a class="btn btn--primary" href="/products/create"><i class="ri-add-line"></i> Add product</a>
+            </div>
+        </div>
+
+        <dl class="stats">
+            <div class="stat"><dt>Products</dt><dd><%= stats.totalProducts %></dd></div>
+            <div class="stat"><dt>In stock</dt><dd class="is-good"><%= stats.inStock %></dd></div>
+            <div class="stat"><dt>Sold out</dt><dd class="<%= stats.soldOut > 0 ? 'is-bad' : '' %>"><%= stats.soldOut %></dd></div>
+            <div class="stat"><dt>Bags sold</dt><dd><%= stats.itemsSold %></dd></div>
+            <div class="stat"><dt>Orders</dt><dd><a href="/owners/orders"><%= stats.orders %></a></dd></div>
+            <div class="stat"><dt>Revenue</dt><dd><%= formatPrice(stats.revenue) %></dd></div>
+        </dl>
+
+        <% if (products.length === 0) { %>
+            <div class="empty">
+                <i class="ri-shopping-bag-3-line"></i>
+                <h3>No products yet</h3>
+                <p>Add your first bag and it will appear in the shop.</p>
+                <a class="btn btn--primary" href="/products/create">Add product</a>
+            </div>
+        <% } %>
+
+        <div class="grid">
+            <% products.forEach(function (product) { %>
+                <% const soldOut = product.stock <= 0; %>
+                <article class="admin-tile <%= soldOut ? 'is-soldout' : '' %>">
+                    <div class="tile__stage" style="background-color: <%= product.bgcolor %>">
+                        <div class="tile__tags">
+                            <span class="tag <%= soldOut ? 'tag--dark' : '' %>"><%= soldOut ? 'Sold out' : product.stock + ' in stock' %></span>
+                            <% if (product.discount > 0) { %><span class="tag tag--sale"><%= formatPrice(product.discount) %> off</span><% } %>
+                        </div>
+                        <img src="<%= productImageUrl(product) %>" alt="<%= product.name %>" loading="lazy" style="<%= soldOut ? 'opacity:.45' : '' %>">
+                    </div>
+                    <div class="admin-tile__info">
+                        <h3 class="tile__name"><%= product.name %></h3>
+                        <p class="tile__price">
+                            <span><%= formatPrice(product.finalPrice) %></span>
+                            <% if (product.discount > 0) { %><s class="muted"><%= formatPrice(product.price) %></s><% } %>
+                        </p>
+                        <div class="admin-tile__meta">
+                            <span><i class="ri-shopping-cart-line"></i> <%= product.soldCount %> sold</span>
+                            <span><i class="ri-calendar-line"></i> <%= new Date(product.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) %></span>
+                        </div>
+                    </div>
+                    <div class="admin-tile__actions">
+                        <a class="btn btn--ghost btn--sm" href="/products/<%= product._id %>/edit"><i class="ri-edit-line"></i> Edit</a>
+                        <% if (!soldOut) { %>
+                            <form action="/products/<%= product._id %>/sold-out?_method=PATCH" method="post" data-confirm="Mark &quot;<%= product.name %>&quot; as sold out?">
+                                <button class="btn btn--ghost btn--sm" type="submit">Sold out</button>
+                            </form>
+                        <% } %>
+                        <form class="push" action="/products/<%= product._id %>?_method=DELETE" method="post" data-confirm="Delete &quot;<%= product.name %>&quot;?">
+                            <button class="btn btn--danger btn--sm" type="submit" aria-label="Delete <%= product.name %>"><i class="ri-delete-bin-line"></i></button>
+                        </form>
+                    </div>
+                </article>
+            <% }) %>
+        </div>
+    </div>
+</main>
+<%- include('./partials/footer') %>

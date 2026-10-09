@@ -1,0 +1,14 @@
+<%- include('./partials/header') %>
+<main class="page">
+    <div class="container">
+        <a class="back-link" href="/owners/admin"><i class="ri-arrow-left-line"></i> All products</a>
+        <div class="page-head">
+            <div>
+                <h1 class="page-title">Edit product</h1>
+                <p class="page-sub"><%= product.soldCount %> sold &middot; added <%= formatDate(product.createdAt) %></p>
+            </div>
+        </div>
+        <%- include('./partials/product-form', { formAction: '/products/' + product._id + '?_method=PUT', submitLabel: 'Save changes', product: product }) %>
+    </div>
+</main>
+<%- include('./partials/footer') %>

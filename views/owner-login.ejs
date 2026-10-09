@@ -1,0 +1,19 @@
+<%- include('./partials/header') %>
+<section class="center-card">
+    <form class="center-card__box" action="/owners/login" method="post" autocomplete="off">
+        <span class="center-card__badge"><i class="ri-shield-user-line"></i> Owner</span>
+        <h1 class="page-title">Shop owner</h1>
+        
+        <label class="field">
+            <span class="field__label">Email</span>
+            <input class="input" type="email" name="email" placeholder="Email" required>
+        </label>
+        <label class="field">
+            <span class="field__label">Password</span>
+            <input class="input" type="password" name="password" placeholder="Password" required>
+        </label>
+        <button class="btn btn--primary btn--lg btn--block" type="submit">Login</button>
+        <a class="back-link" href="/"><i class="ri-arrow-left-line"></i> Customer login</a>
+    </form>
+</section>
+<%- include('./partials/footer') %>

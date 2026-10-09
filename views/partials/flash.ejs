@@ -1,0 +1,18 @@
+<% const errs = typeof error !== 'undefined' ? error : []; %>
+<% const oks = typeof success !== 'undefined' ? success : []; %>
+<% if (errs.length || oks.length) { %>
+    <div class="toasts" role="status" aria-live="polite">
+        <% if (errs.length) { %>
+            <div class="toast toast--error" data-flash>
+                <i class="ri-error-warning-line"></i>
+                <ul><% errs.forEach(function (msg) { %><li><%= msg %></li><% }) %></ul>
+            </div>
+        <% } %>
+        <% if (oks.length) { %>
+            <div class="toast" data-flash>
+                <i class="ri-checkbox-circle-line"></i>
+                <ul><% oks.forEach(function (msg) { %><li><%= msg %></li><% }) %></ul>
+            </div>
+        <% } %>
+    </div>
+<% } %>

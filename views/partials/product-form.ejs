@@ -1,0 +1,78 @@
+<%#
+  Create aur Edit dono pages ka form + live preview.
+  formAction, submitLabel, product (edit me) pass hote hain.
+%>
+<% const p = typeof product !== 'undefined' && product ? product : null; %>
+<% const val = function (key, fallback) { return p && p[key] !== undefined && p[key] !== null ? p[key] : fallback; }; %>
+<% const bg = val('bgcolor', '#f4f4f5'), panel = val('panelcolor', '#e4e4e7'), text = val('textcolor', '#18181b'); %>
+<form class="product-editor" autocomplete="off" action="<%= formAction %>" method="post" enctype="multipart/form-data" data-product-form data-currency="<%= typeof currency !== 'undefined' ? currency : 'Rs.' %>">
+    <div>
+        <section class="panel">
+            <h2 class="panel__title"><i class="ri-image-line"></i> Photo</h2>
+            <div class="upload">
+                <div class="upload__thumb">
+                    <% if (p) { %><img src="<%= productImageUrl(p) %>" alt=""><% } else { %><i class="ri-image-add-line"></i><% } %>
+                </div>
+                <div class="field">
+                    <input name="image" type="file" accept="image/png,image/jpeg,image/webp,image/gif" data-preview="preview-img" <%= p ? '' : 'required' %>>
+                    <span class="field__hint"><%= p ? 'Choose a new photo only if you want to replace it. ' : '' %>PNG with a transparent background looks best. Max 2MB.</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2 class="panel__title"><i class="ri-price-tag-3-line"></i> Details</h2>
+            <div class="form-grid">
+                <label class="field span-2">
+                    <span class="field__label">Product name</span>
+                    <input class="input" name="name" type="text" placeholder="Urban Navy Backpack" value="<%= val('name', '') %>" required maxlength="80" data-bind="name">
+                </label>
+                <label class="field">
+                    <span class="field__label">Price</span>
+                    <input class="input" name="price" type="number" min="0" step="1" placeholder="2500" value="<%= val('price', '') %>" required data-bind="price">
+                </label>
+                <label class="field">
+                    <span class="field__label">Discount</span>
+                    <input class="input" name="discount" type="number" min="0" step="1" placeholder="0" value="<%= val('discount', 0) %>" data-bind="discount">
+                    <span class="field__hint">Amount taken off the price.</span>
+                </label>
+                <label class="field span-2">
+                    <span class="field__label">Stock</span>
+                    <input class="input" name="stock" type="number" min="0" step="1" value="<%= val('stock', 10) %>">
+                    <span class="field__hint">Set to 0 to show it as sold out.</span>
+                </label>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2 class="panel__title"><i class="ri-palette-line"></i> Card colours</h2>
+            <div class="color-row">
+                <label class="color-field"><input name="bgcolor" type="color" value="<%= bg %>" data-bind="bgcolor"> Background</label>
+                <label class="color-field"><input name="panelcolor" type="color" value="<%= panel %>" data-bind="panelcolor"> Panel</label>
+                <label class="color-field"><input name="textcolor" type="color" value="<%= text %>" data-bind="textcolor"> Text</label>
+            </div>
+        </section>
+
+        <div style="margin-top: 20px; display: flex; gap: 10px">
+            <button class="btn btn--primary btn--lg" type="submit"><%= submitLabel %></button>
+            <a class="btn btn--ghost btn--lg" href="/owners/admin">Cancel</a>
+        </div>
+    </div>
+
+    <div>
+        <p class="preview-label">Preview in shop</p>
+        <article class="tile">
+            <div class="tile__stage" data-preview-bg style="background-color: <%= bg %>">
+                <div class="tile__tags"><span><span class="tag tag--sale" data-preview-sale hidden></span></span></div>
+                <img id="preview-img" src="<%= p ? productImageUrl(p) : '/images/1bag.png' %>" alt="" style="<%= p ? '' : 'opacity:.25' %>">
+            </div>
+            <div class="tile__panel" data-preview-panel style="background-color: <%= panel %>; color: <%= text %>">
+                <div>
+                    <h3 class="tile__name" data-preview-name><%= val('name', 'Product name') %></h3>
+                    <p class="tile__price"><span data-preview-price></span><s data-preview-mrp></s></p>
+                </div>
+                <span class="tile__add"><i class="ri-add-line"></i></span>
+            </div>
+        </article>
+    </div>
+</form>

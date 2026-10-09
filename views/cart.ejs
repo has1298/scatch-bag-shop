@@ -1,0 +1,64 @@
+<%- include('./partials/header') %>
+<main class="page">
+    <div class="container">
+        <div class="page-head">
+            <div>
+                <h1 class="page-title">Your cart</h1>
+                <p class="page-sub"><%= totals.count %> <%= totals.count === 1 ? 'item' : 'items' %></p>
+            </div>
+            <% if (items.length) { %><a class="back-link" href="/shop"><i class="ri-arrow-left-line"></i> Continue shopping</a><% } %>
+        </div>
+
+        <% if (items.length === 0) { %>
+            <div class="empty">
+                <i class="ri-shopping-bag-3-line"></i>
+                <h3>Your cart is empty</h3>
+                <p>Add a bag from the shop and it will show up here.</p>
+                <a class="btn btn--primary" href="/shop">Browse bags</a>
+            </div>
+        <% } else { %>
+            <div class="split">
+                <div class="cart-list">
+                    <% items.forEach(function (item) { %>
+                        <% const p = item.product; %>
+                        <div class="cart-item">
+                            <div class="cart-item__thumb" style="background-color: <%= p.bgcolor %>">
+                                <img src="<%= productImageUrl(p) %>" alt="<%= p.name %>">
+                            </div>
+                            <div>
+                                <h3 class="cart-item__name"><%= p.name %></h3>
+                                <p class="cart-item__meta">
+                                    <%= formatPrice(p.price - (p.discount || 0)) %> each
+                                    <% if (p.stock <= 5) { %> &middot; <%= p.stock > 0 ? 'only ' + p.stock + ' in stock' : 'sold out' %><% } %>
+                                </p>
+                                <div class="cart-item__actions">
+                                    <div class="stepper">
+                                        <form action="/cart/<%= p._id %>/decrease" method="post">
+                                            <button type="submit" aria-label="One less"><i class="ri-subtract-line"></i></button>
+                                        </form>
+                                        <span><%= item.quantity %></span>
+                                        <form action="/cart/<%= p._id %>/increase" method="post">
+                                            <button type="submit" aria-label="One more"><i class="ri-add-line"></i></button>
+                                        </form>
+                                    </div>
+                                    <form action="/cart/<%= p._id %>?_method=DELETE" method="post">
+                                        <button class="link-btn link--danger" type="submit"><i class="ri-delete-bin-line"></i> Remove</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="cart-item__total"><%= formatPrice((p.price - (p.discount || 0)) * item.quantity) %></div>
+                        </div>
+                    <% }) %>
+                </div>
+
+                <aside class="summary">
+                    <h2 class="summary__title">Price breakdown</h2>
+                    <%- include('./partials/summary-rows', { totals: totals }) %>
+                    <a class="btn btn--primary btn--lg btn--block" href="/cart/checkout">Go to checkout</a>
+                    <p class="summary__note"><i class="ri-hand-coin-line"></i> Pay in cash when your order arrives.</p>
+                </aside>
+            </div>
+        <% } %>
+    </div>
+</main>
+<%- include('./partials/footer') %>

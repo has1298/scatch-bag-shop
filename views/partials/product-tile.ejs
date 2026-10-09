@@ -1,0 +1,34 @@
+<%# Ek product card (shop page). `product` pass hota hai. %>
+<% const soldOut = product.stock <= 0; %>
+<article class="tile <%= soldOut ? 'is-soldout' : '' %>">
+    <div class="tile__stage" style="background-color: <%= product.bgcolor %>">
+        <div class="tile__tags">
+            <span>
+                <% if (soldOut) { %>
+                    <span class="tag tag--dark">Sold out</span>
+                <% } else if (product.discount > 0) { %>
+                    <span class="tag tag--sale"><%= formatPrice(product.discount) %> off</span>
+                <% } %>
+            </span>
+            <% if (!soldOut && product.stock <= 5) { %>
+                <span class="tag tag--warn">Only <%= product.stock %> left</span>
+            <% } %>
+        </div>
+        <img src="<%= productImageUrl(product) %>" alt="<%= product.name %>" loading="lazy">
+    </div>
+    <div class="tile__panel" style="background-color: <%= product.panelcolor %>; color: <%= product.textcolor %>">
+        <div>
+            <h3 class="tile__name"><%= product.name %></h3>
+            <p class="tile__price">
+                <span><%= formatPrice(product.finalPrice) %></span>
+                <% if (product.discount > 0) { %><s><%= formatPrice(product.price) %></s><% } %>
+            </p>
+        </div>
+        <form action="/cart/add/<%= product._id %>" method="post">
+            <button class="tile__add" type="submit" <%= soldOut ? 'disabled' : '' %>
+                title="<%= soldOut ? 'Sold out' : 'Add to cart' %>" aria-label="Add <%= product.name %> to cart">
+                <i class="<%= soldOut ? 'ri-close-line' : 'ri-add-line' %>"></i>
+            </button>
+        </form>
+    </div>
+</article>
