@@ -2,6 +2,9 @@
 const mongoose = require('mongoose');
 const env = require('./env');
 
+const dns = require('dns');
+if (!env.isProduction) dns.setServers(['8.8.8.8', '1.1.1.1']);
+
 async function connectDB() {
   mongoose.set('strictQuery', true);
   await mongoose.connect(env.MONGODB_URI);
