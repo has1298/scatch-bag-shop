@@ -49,6 +49,16 @@ app.use(flashLocals);
 app.use(attachAuth);
 
 
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/owners', ownersRouter);
@@ -60,16 +70,17 @@ app.use(notFound);
 app.use(errorHandler);
 
 
-connectDB()
-  .then(() => {
-    app.listen(env.PORT, () => {
-      console.log(` Server working: http://localhost:${env.PORT}`);
+if (!process.env.VERCEL) {
+  connectDB()
+    .then(() => {
+      app.listen(env.PORT, () => {
+        console.log(`Working: http://localhost:${env.PORT}`);
+      });
+    })
+    .catch((err) => {
+      console.error('Not connect to mongodb', err.message);
+      process.exit(1);
     });
-  })
-  .catch((err) => {
-    console.error(' Not possible to connect MongoDB:', err.message);
-    console.error(' Please check if MongoDB is running and MONGODB_URI is correct in .env');
-    process.exit(1);
-  });
+}
 
 module.exports = app;
