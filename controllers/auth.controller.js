@@ -1,10 +1,11 @@
 const User = require('../models/user.model');
 const asyncHandler = require('../utils/asyncHandler');
 const { generateToken } = require('../utils/generateToken');
+
 const { setAuthCookie, clearAuthCookie } = require('../utils/cookie');
 const { validateRegister, validateLogin } = require('../utils/validators');
 
-// POST
+
 exports.registerUser = asyncHandler(async (req, res) => {
   const { data, errors } = validateRegister(req.body);
   if (errors.length) {
