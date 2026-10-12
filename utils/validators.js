@@ -13,25 +13,6 @@ function validateRegister(body) {
     email: clean(body.email).toLowerCase(),
     password: typeof body.password === 'string' ? body.password : '',
   };
-  
-
-const { COUNTRIES, PAYMENT_METHODS } = require('./constants');
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-const COLOR_RE = /^(#[0-9a-fA-F]{3}|#[0-9a-fA-F]{6}|[a-zA-Z]{3,20})$/;
-
-const PHONE_RE = /^\+?[0-9][0-9\s-]{8,16}[0-9]$/;
-const POSTAL_RE = /^[A-Za-z0-9\s-]{3,12}$/;
-
-const clean = (v) => (typeof v === 'string' ? v.trim() : '');
-
-function validateRegister(body) {
-  const data = {
-    fullname: clean(body.fullname),
-    email: clean(body.email).toLowerCase(),
-    password: typeof body.password === 'string' ? body.password : '',
-  };
   const errors = [];
   if (data.fullname.length < 3) errors.push('Full name must be at least 3 characters');
   if (data.fullname.length > 60) errors.push('Full name cannot be more than 60 characters');
@@ -47,8 +28,8 @@ function validateLogin(body) {
     password: typeof body.password === 'string' ? body.password : '',
   };
   const errors = [];
-  if (!EMAIL_RE.test(data.email)) errors.push('Please enter a valid email address');
-  if (!data.password) errors.push('Please enter your password');
+  if (!EMAIL_RE.test(data.email)) errors.push('input correct email address');
+  if (!data.password) errors.push('input password');
   return { data, errors };
 }
 
@@ -85,6 +66,9 @@ function validateProduct(body) {
 
   return { data, errors };
 }
+
+const PHONE_RE = /^\+?[0-9][0-9\s-]{8,16}[0-9]$/;
+const POSTAL_RE = /^[A-Za-z0-9\s-]{3,12}$/;
 
 function validateAddressFields(body, errors, { required }) {
   const address = {
@@ -143,4 +127,4 @@ function validateCheckout(body) {
   };
 }
 
-module.exports = { validateRegister, validateLogin, validateProduct, validateProfile, validateCheckout }; }
+module.exports = { validateRegister, validateLogin, validateProduct, validateProfile, validateCheckout };
