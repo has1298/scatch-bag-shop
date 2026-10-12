@@ -1,4 +1,4 @@
-// Shop page ke sort aur filter options
+
 const Product = require('../models/product.model');
 
 const NEW_COLLECTION_DAYS = 30;
@@ -29,7 +29,7 @@ function resolveFilter(value) {
   return FILTER_OPTIONS.find((o) => o.value === value) || FILTER_OPTIONS[0];
 }
 
-// finalPrice (price - discount) par sort karne ke liye aggregate use hota hai
+
 async function listProducts({ sortby, filter }) {
   const sortOpt = resolveSort(sortby);
   const filterOpt = resolveFilter(filter);

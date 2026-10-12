@@ -1,4 +1,4 @@
-// Order ka status badalna. Cancel hone par stock wapas products me chala jata hai.
+
 const Product = require('../models/product.model');
 
 async function setOrderStatus(order, status) {
@@ -16,7 +16,7 @@ async function setOrderStatus(order, status) {
   }
 
   order.status = status;
-  // COD: delivery par paisa mil jata hai
+ 
   if (status === 'delivered') order.paymentStatus = 'paid';
   await order.save();
   return order;
